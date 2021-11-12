@@ -1,0 +1,420 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\title{Time Series Analysis Module 1 Assignment}
+\author{Filipp Krasovsky}
+\date{}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Time Series Analysis Module 1 Assignment},
+  pdfauthor={Filipp Krasovsky},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\maketitle
+
+Textbook Exercises (Pages 14, 35)
+
+\begin{verbatim}
+## Loading required package: astsa
+\end{verbatim}
+
+1.1. {[}8 points{]} a) Generate n=100 observations from the
+autoregression xt = -.9xt-2 + wt
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#create an AR{-}2 series with coefficients B1 = 0 and B2={-}0.9,}
+\CommentTok{\#creating xt = 0(xt{-}1) {-} 0.9(xt{-}2) + wt}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{1002}\NormalTok{)}
+\NormalTok{ar2 }\OtherTok{\textless{}{-}} \FunctionTok{arima.sim}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{order =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), }\AttributeTok{ar =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\SpecialCharTok{{-}}\FloatTok{0.9}\NormalTok{)), }\AttributeTok{n =} \DecValTok{100}\NormalTok{)}
+\FunctionTok{ts.plot}\NormalTok{(ar2,}\AttributeTok{main=}\StringTok{"X\^{}t = {-}0.9X\^{}(t{-}2) + Wt"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-2-1.pdf}
+Apply a moving average filter (xt + xt-1 + xt-2 + xt-3) / 4 to the
+series.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#use the filter command to create a moving average}
+\NormalTok{ma3 }\OtherTok{=} \FunctionTok{filter}\NormalTok{(ar2,}\AttributeTok{sides=}\DecValTok{1}\NormalTok{,}\AttributeTok{filter=}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{4}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+\CommentTok{\#plot and superimpose}
+\FunctionTok{tsplot}\NormalTok{(ar2,}\AttributeTok{col=}\StringTok{"black"}\NormalTok{,}\AttributeTok{main=}\StringTok{"AR{-}2 vs. MA{-}3 transformation"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(ma3,}\AttributeTok{col=}\StringTok{"blue"}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\AttributeTok{x=}\StringTok{"topleft"}\NormalTok{,}\AttributeTok{legend=}\FunctionTok{c}\NormalTok{(}\StringTok{"MA{-}3"}\NormalTok{,}\StringTok{"AR{-}2"}\NormalTok{),}\AttributeTok{col=}\FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{,}\StringTok{"black"}\NormalTok{),}\AttributeTok{cex=}\FloatTok{0.8}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\SpecialCharTok{:}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-3-1.pdf}
+Repeat with X\^{}t = 2cos(2pi * (t/4)) + wt.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#First, create our signal + noise model as well as an index for time.}
+\NormalTok{t }\OtherTok{=} \DecValTok{1}\SpecialCharTok{:}\DecValTok{100}
+\NormalTok{sig }\OtherTok{=} \DecValTok{2} \SpecialCharTok{*} \FunctionTok{cos}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi}\SpecialCharTok{*}\NormalTok{(t}\SpecialCharTok{/}\DecValTok{4}\NormalTok{))}
+\NormalTok{noise }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{100}\NormalTok{)}
+\NormalTok{signoise }\OtherTok{=}\NormalTok{ sig }\SpecialCharTok{+}\NormalTok{ noise }
+
+\CommentTok{\#use the filter command to create a moving average}
+\NormalTok{signoise\_ma3 }\OtherTok{=} \FunctionTok{filter}\NormalTok{(signoise,}\AttributeTok{sides=}\DecValTok{1}\NormalTok{,}\AttributeTok{filter=}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{4}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+\CommentTok{\#plot and superimpose}
+\FunctionTok{tsplot}\NormalTok{(signoise,}\AttributeTok{col=}\StringTok{"black"}\NormalTok{,}\AttributeTok{main=}\StringTok{"Signal + Noise vs. MA{-}3 transformation"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(signoise\_ma3,}\AttributeTok{col=}\StringTok{"blue"}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(sig,}\AttributeTok{col=}\StringTok{"gray"}\NormalTok{,}\AttributeTok{lty=}\DecValTok{3}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\AttributeTok{x=}\StringTok{"topleft"}\NormalTok{,}\AttributeTok{legend=}\FunctionTok{c}\NormalTok{(}\StringTok{"MA{-}3"}\NormalTok{,}\StringTok{"Signal + Noise"}\NormalTok{,}\StringTok{"Signal"}\NormalTok{),}\AttributeTok{col=}\FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{,}\StringTok{"black"}\NormalTok{,}\StringTok{"gray"}\NormalTok{),}\AttributeTok{cex=}\FloatTok{0.8}\NormalTok{,}\AttributeTok{lty=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-4-1.pdf}
+Repeat with the log of the johnson and johnson data in example 1.2 from
+the textbook.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#long{-}form syntax to make origin clear.}
+\NormalTok{logjj }\OtherTok{=} \FunctionTok{log}\NormalTok{(astsa}\SpecialCharTok{::}\NormalTok{jj)}
+\CommentTok{\#use the filter command to create a moving average}
+\NormalTok{jj\_ma3 }\OtherTok{=} \FunctionTok{filter}\NormalTok{(logjj,}\AttributeTok{sides=}\DecValTok{1}\NormalTok{,}\AttributeTok{filter=}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{4}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+\CommentTok{\#plot and superimpose}
+\FunctionTok{tsplot}\NormalTok{(logjj,}\AttributeTok{col=}\StringTok{"black"}\NormalTok{,}\AttributeTok{main=}\StringTok{"Log of J\&J Earnings vs. MA{-}3"}\NormalTok{)}
+\FunctionTok{lines}\NormalTok{(jj\_ma3,}\AttributeTok{col=}\StringTok{"blue"}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{legend}\NormalTok{(}\AttributeTok{x=}\StringTok{"topleft"}\NormalTok{,}\AttributeTok{legend=}\FunctionTok{c}\NormalTok{(}\StringTok{"MA{-}3"}\NormalTok{,}\StringTok{"Log Earnings"}\NormalTok{),}\AttributeTok{col=}\FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{,}\StringTok{"black"}\NormalTok{),}\AttributeTok{cex=}\FloatTok{0.8}\NormalTok{,}\AttributeTok{lty=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-5-1.pdf}
+What is seasonal adjustment? Seasonal adjusment is defined as a method
+of data smoothing for economic performance over a given period, the
+primary goal of which is to remove cyclical trends and provide a
+nonseasonal view.
+
+Conclusions: I learned how to generate simulated time series, and as a
+corollary, how to identify when time series data is behaving in a way
+that can be modeled as either an AR or MA process. Furthermore, I
+learned that moving averages are able to smooth noisy data.
+
+Exercise 1.3 - Working with Random Walk and Moving Average
+
+Generate and plot nine series that are random walks of length n=300
+without drift (theta=0) and variance = 1. Then, generate nine series of
+length n = 500 that are moving averages of the form discussed in example
+1.8
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{9}\NormalTok{))\{}
+\NormalTok{  this.walk }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{300}\NormalTok{)}
+\NormalTok{  this.walk }\OtherTok{=} \FunctionTok{cumsum}\NormalTok{(this.walk)}
+  
+  \ControlFlowTok{if}\NormalTok{(i}\SpecialCharTok{==}\DecValTok{1}\NormalTok{)\{}
+    \FunctionTok{tsplot}\NormalTok{(this.walk,}\AttributeTok{main=}\StringTok{"Random Walks 1{-}9"}\NormalTok{,}\AttributeTok{col=}\NormalTok{i)}
+\NormalTok{  \}}\ControlFlowTok{else}\NormalTok{\{}
+    \FunctionTok{lines}\NormalTok{(this.walk,}\AttributeTok{col=}\NormalTok{i)}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{9}\NormalTok{))\{}
+\NormalTok{  w }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{500}\NormalTok{)}
+\NormalTok{  this.ma }\OtherTok{=} \FunctionTok{filter}\NormalTok{(w,}\AttributeTok{sides=}\DecValTok{2}\NormalTok{,}\AttributeTok{filter=}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+  \ControlFlowTok{if}\NormalTok{(i}\SpecialCharTok{==}\DecValTok{1}\NormalTok{)\{}
+    \FunctionTok{tsplot}\NormalTok{(this.ma,}\AttributeTok{main=}\StringTok{"Moving Avg. 1{-}9"}\NormalTok{,}\AttributeTok{col=}\NormalTok{i)}
+\NormalTok{  \}}\ControlFlowTok{else}\NormalTok{\{}
+    \FunctionTok{lines}\NormalTok{(this.ma,}\AttributeTok{col=}\NormalTok{i)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+The primary differences between the two types of time series are that
+Random Walks are less stationary than moving averages. More importantly,
+the variance of a random walk increases without bound as time increases,
+whereas the variance of a moving average does not.
+
+1.4. {[}7 points{]} The data in gdp are the seasonally adjusted
+quarterly U.S. GDP from 1947-I to 2018-III. The growth rate is shown in
+Figure 1.4. a) Plot the data and compare it to one of the models
+discussed in Section 1.3.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#we reference the gdp dataset from astsa::gdp }
+\CommentTok{\#plot the data }
+\FunctionTok{tsplot}\NormalTok{(astsa}\SpecialCharTok{::}\NormalTok{gdp, }\AttributeTok{main=}\StringTok{"Seasonally Adjusted GDP data, 1947Q1{-}2018Q3"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-7-1.pdf}
+b) Reproduce Figure 1.4 using your colors and plot characters (pch) of
+your own choice. Then, comment on the difference between the two methods
+of calculating growth rate.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logdiff }\OtherTok{=} \FunctionTok{diff}\NormalTok{(}\FunctionTok{log}\NormalTok{(gdp))}
+\NormalTok{returns }\OtherTok{=} \FunctionTok{diff}\NormalTok{(gdp)}\SpecialCharTok{/}\FunctionTok{lag}\NormalTok{(gdp,}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
+
+\FunctionTok{tsplot}\NormalTok{(logdiff,}\AttributeTok{type=}\StringTok{"o"}\NormalTok{,}\AttributeTok{col=}\StringTok{"gray"}\NormalTok{,}\AttributeTok{ylab=}\StringTok{"GDP Growth"}\NormalTok{)}
+\FunctionTok{points}\NormalTok{(returns,}\AttributeTok{pch=}\DecValTok{1}\NormalTok{,}\AttributeTok{col=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-8-1.pdf}
+The output itself is negligibly different - however, the process differs
+in that the first method uses a log transformation and takes successive
+differences while the other calculates the percentage difference by
+computing r = (xt - x(t-1))/x(t-1)
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Which of the models discussed in Section 1.3 best describe the
+  behavior of the growth in U.S. GDP?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#plot the ACF and PACF to identify if this is AR or MA.}
+\FunctionTok{acf}\NormalTok{(logdiff)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{pacf}\NormalTok{(logdiff)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-9-2.pdf}
+Our correlograms show a gradually decreasing ACF and a PACF that cuts
+after one spike. As a result, we can make the argument this is an AR(1)
+model.
+
+2.11. {[}7 points{]}
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\tightlist
+\item
+  Simulate a series of n=500 moving average observations as in Example
+  1.8 and compute the sample ACF to lag 20. Compare the sample ACF you
+  obtain to the actual ACF {[}Hint: Recall Example 2.17{]}
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#reproduce an MA of n=500}
+\NormalTok{w }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{500}\NormalTok{)}
+\NormalTok{v }\OtherTok{=} \FunctionTok{filter}\NormalTok{(w,}\AttributeTok{sides=}\DecValTok{2}\NormalTok{,}\AttributeTok{filter=}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+
+\CommentTok{\#compute the sample ACF to lag twenty.}
+\CommentTok{\#we can use the sample ACF formula:}
+\CommentTok{\#sigma(1,n{-}h)\{(x\^{}t+h {-} mean(x)) * (x\^{}t {-} mean(x))\} / sigma(1,n)\{(x\^{}t{-}mean(x))\^{}2\}}
+\CommentTok{\#...or we can just use the library.}
+
+\FunctionTok{acf}\NormalTok{(w,}\AttributeTok{lag.max =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-10-1.pdf}
+The actual ACF of an MA series would have gradually decreasing values as
+the absolute lag moves from 0 to 2, and then becomes zero after any lags
+\textgreater{} 2. In this instance, we only have a strong spike at zero.
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Repeat part(a) using only n=50. How does changing n affect the
+  results?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#reproduce an MA of n=50}
+\NormalTok{w }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{50}\NormalTok{)}
+\NormalTok{v }\OtherTok{=} \FunctionTok{filter}\NormalTok{(w,}\AttributeTok{sides=}\DecValTok{2}\NormalTok{,}\AttributeTok{filter=}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{/}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{))}
+
+\CommentTok{\#compute the sample ACF to lag twenty.}
+\CommentTok{\#we can use the sample ACF formula:}
+\CommentTok{\#sigma(1,n{-}h)\{(x\^{}t+h {-} mean(x)) * (x\^{}t {-} mean(x))\} / sigma(1,n)\{(x\^{}t{-}mean(x))\^{}2\}}
+\CommentTok{\#...or we can just use the library.}
+
+\FunctionTok{acf}\NormalTok{(w,}\AttributeTok{lag.max =} \DecValTok{20}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-11-1.pdf}
+The key differences are rooted in (1) a higher standard for
+significance, (2) changing magnitudes for spikes, and (3) a change in
+directionality of the lag spikes. Making n smaller creates more
+variability in the ACF.
+
+2.12. {[}7 points{]}
+
+Simulate 500 observations from the AR model specified in Example 1.9 and
+then plot the sample ACF to lag 50. What does the sample ACF tell you
+about the approximate cyclic behavior of the data? {[}Hint: Recall
+Example 2.32{]}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{90210}\NormalTok{)  }
+\NormalTok{w }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{500} \SpecialCharTok{+} \DecValTok{50}\NormalTok{) }
+\CommentTok{\#50 extra to avoid startup problems  }
+\NormalTok{x }\OtherTok{=} \FunctionTok{filter}\NormalTok{(w, }\AttributeTok{filter=}\FunctionTok{c}\NormalTok{(}\FloatTok{1.5}\NormalTok{,}\SpecialCharTok{{-}}\NormalTok{.}\DecValTok{75}\NormalTok{), }\AttributeTok{method=}\StringTok{"recursive"}\NormalTok{)[}\SpecialCharTok{{-}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{50}\NormalTok{)]  }
+\FunctionTok{tsplot}\NormalTok{(x, }\AttributeTok{main=}\StringTok{"autoregression"}\NormalTok{, }\AttributeTok{col=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{acf}\NormalTok{(x,}\AttributeTok{lag.max =} \DecValTok{50}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-12-2.pdf}
+Lags eventually decrease in siginificance after k = 30; however, we can
+confirm that observations 12 moments in time apart are positively
+correlated. Moments that are separated by around six lags tend to be
+negatively correlated. Positive values of the AR process tend to be
+associated with negative values 6 lags apart.
+
+2.14. {[}7 points{]} Simulate a series of n=500 observations from the
+signal-plus-noise model presented in Example 1.11 with standard
+deviations of 0,1,and 5.Compute the sample ACF to lag 100 of the three
+series you generated and comment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{t}\OtherTok{=}\DecValTok{500}
+\ControlFlowTok{for}\NormalTok{ ( i }\ControlFlowTok{in} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{))\{}
+\NormalTok{  cs }\OtherTok{=} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{cos}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{pi}\SpecialCharTok{*}\NormalTok{(t}\SpecialCharTok{+}\DecValTok{15}\NormalTok{)}\SpecialCharTok{/}\DecValTok{50}\NormalTok{)}
+\NormalTok{  w }\OtherTok{=} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n=}\DecValTok{500}\NormalTok{,}\AttributeTok{mean=}\DecValTok{0}\NormalTok{,}\AttributeTok{sd=}\NormalTok{i)}
+\NormalTok{  x }\OtherTok{=}\NormalTok{ cs }\SpecialCharTok{+}\NormalTok{ w }
+\NormalTok{  x[}\DecValTok{500}\NormalTok{]}\OtherTok{=}\FloatTok{0.00001}
+  \CommentTok{\#tsplot(sn,main=paste("Signal+Noise with Sigma:",i))}
+  \FunctionTok{acf}\NormalTok{(x,}\AttributeTok{main=}\FunctionTok{paste}\NormalTok{(}\StringTok{"Signal + Noise ACF w/ Sigma"}\NormalTok{,i),}\AttributeTok{lag.max =} \DecValTok{100}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-13-2.pdf}
+\includegraphics{Module1-Assignment_files/figure-latex/unnamed-chunk-13-3.pdf}
+Remarks: The first time series has no autocorrelative properties because
+the value is a constant with no variance. As the standard deviation
+becomes larger, the number of significant lag spikes increases as well -
+such as in the case of the final series, with potentially significance
+spikes at lag \textasciitilde60 and \textasciitilde90.
+
+\end{document}
