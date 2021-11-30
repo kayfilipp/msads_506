@@ -1,0 +1,260 @@
+---
+title: "Module 3 Assignment - ARMA Models"
+author: "Filipp Krasovsky"
+date: "11/15/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 4.2 
+
+Let Wt be a white noise process with variance sigma^2,
+let abs(Phi) < 1 be a constant.
+Consider X0 = w0 and Xt = PhiX(t-1) + Wt, t = 1,2...
+
+## (a) Show that Xt = sigma(j=0,t,Phi(j)*W(t-j)) for any t
+
+![part a](/Users/Filipp/Documents/msads506/mod3/part_a.jpg)
+
+## (b) find E(xt)
+![part b](/Users/Filipp/Documents/msads506/mod3/part_b.jpg)
+## (c) show that var(xt) = (sigma^2 / (1-phi^2)) * (1-phi^2(t+1))
+
+![part c](/Users/Filipp/Documents/msads506/mod3/part_c.jpg)
+
+## (d) show that h>=0, cov(xt+h,xt) = phi(h)*var(xt)
+## (e) is Xt stationary? 
+## (f) argue that as t->inf the process becomes stationary
+
+![part a](/Users/Filipp/Documents/msads506/mod3/parts_d_e_f.jpg)
+
+## (g) comment on how you could use the results to siumulate
+## n observations of a stationary gaussian AR(1) model from 
+## simulated iid N(0,1) values 
+
+As in the examples provided in the textbook, we could generate an excess amount of values and discard the first X (usually ~50 values).
+
+## (h) supposed X0 = W0/sqrt(1-phi^2). is this process
+## stationary? show var(xt) is constant.
+
+![part a](/Users/Filipp/Documents/msads506/mod3/part_h.jpg)
+# 4.3 (8 Points)
+## Consider the following models:
+## Xt = .8Xt-1 - .15Xt-2 + wt - .3Wt-1
+## Xt = Xt-1 - .5Xt-2 + Wt + Wt-1
+
+## (a) check the models for parameter redundancy, find 
+## the reduced form 
+
+model 1: 
+rewrite:
+(1 - .8B + .15B^2)Xt = (1-.3B)Wt
+(1-.5B)(1-.3B)Xt = (1-.3B)Wt
+(1-.5B)Xt = Wt
+Xt = .5Xt-1 + Wt 
+Model 1 is an AR(1) series.
+
+Model 2:
+Model 2 does not reduce, it is an ARMA(2,1) series.
+
+## (b) check if the models are causal and or invertible
+## in their reduced forms, where applicable.
+## (c) For each of the reduced models find the first 50
+## coefficients and see if their ARMAtoMA and ARMAtoAR 
+## transformations converge to zero.
+
+(both answered concurrently.)
+
+Models 1 and 2
+```{r}
+require(astsa)
+library(Metrics)
+psi = ARMAtoMA(ar = c(0.8),ma=0,50)
+par(mfrow=c(2,1))
+plot(psi,main="Model 1 is Causal")
+
+psi = ARMAtoAR(ar=c(0.8),ma=0,50)
+plot(psi,main = "Model 1 is Invertible")
+```
+```{r}
+psi = ARMAtoMA(ar=c(1,-.5),ma=1,50)
+par(mfrow=c(2,1))
+plot(psi,main="Model 2 is Causal")
+
+pi = ARMAtoAR(ar=c(1,-.5),ma=1,50)
+plot(pi,main = "Model 2 is not Invertible")
+```
+## Let Ct be the cardiovascular mortality series discussed in 3.5 and let Xt = diff(ct) be the differenced data.
+## (a) plot xt and compare it to the actual data plotted in 3.2. Why does differencing seem reasonable?
+
+```{r}
+par(mfrow=c(2,1))
+plot(cmort,col='black')
+plot(diff(cmort),col='red')
+```
+On face value, the original dataset seems to be non-stationary and difficult to model, while the differenced data has less drift and appears stationary.
+
+## (b) calculate and plot the sample acf and pacf of xt using table 4.1, argue that an AR(1) is appropriate.
+
+```{r}
+acf(diff(cmort))
+```
+```{r}
+pacf(diff(cmort))
+```
+
+The ACF does not seem to cut off at any particular lag, gradually decaying, while the PACF has a strong spike at lag = 1, thus making a reasonable case to fit an AR(1) model.
+
+## (c) fit an AR1 using maximum likelihood. comment on the significance of the regression parameters.
+## what is the estimate of the white noise variance?
+## (d)comment on the residuals.
+
+```{r}
+xt = diff(cmort)
+sarima(xdata=xt,p=1,d=0,q=0,no.constant=TRUE)
+
+```
+The white noise variance is estimated at 33.81, while the AR1 coefficient has been estimated at -0.5, suggesting that moments in time are negatively correlated with the data point one unit of time prior, and positively correlated
+with moments in time two units behind (and forward). The residuals seem to be a white noise series with an ACF that has no significant spikes. this is also supported by the Ljung-Box p-values all being significant enough to fail to reject the null hypothesis that the data are indipendently distributed.
+
+## e)	Assuming the fitted model is the true model, find the forecasts over a four-week horizon, for m=1,2,3,4, and the corresponding 95% prediction intervals, n=508 here. The easiest way to do this is to use sarima.for from astsa.
+
+```{r}
+m4pred = sarima.for(xt,n.ahead=4,p=1,d=0,q=0,no.constant=TRUE)
+print(m4pred)
+```
+## (f) show how the values were calculated
+
+presumably using the formula xt = -0.5064 * x(t-1) as the point estimate
+with a confidence interval using alpha=.025 and .05.
+mu* St.Dev *(sqrt(1+(1/n))), where t is a tabled value from the t distribution which depends on the confidence level and sample size. 
+
+## (g) what is the one step ahead forecast value value?
+
+```{r}
+print(m4pred$pred[1])
+```
+# 5.2 
+## in example 5.6 we fit an ARIMA model. repeat the analysis for the US GDP series in GDP.
+## discuss all aspects of the fit as specified in the beginning of 5.2 from plotting the data to diagnostics
+## and model choice.
+
+```{r}
+par(mfrow=c(2,1))
+xt = astsa::gdp;
+#1. plot the data 
+plot(xt,col='red',main="GDP (annualized)",ylab="USD(bil)")
+#2. we can also observe the ACF - a slow decay in the ACF suggests differencing.
+acf(xt)
+```
+This series is not stationary and therefore needs to be transformed based on the data itself and the acf.
+
+```{r}
+#2. transform the data 
+par(mfrow=c(2,1))
+xt = diff(diff(gdp))
+plot(xt,col='red',main="Differenced GDP I=2, Annual",ylab='USD (bn)')
+acf(xt)
+```
+This model is mostly stationary, but had a significant drop in 2008, around the time of the financial
+recession. A more robust model would take this into consideration, but we will proceed with observing the dependence orders. The ACF suggests a quick gradual decay, so additional differencing is not necessary.
+
+```{r}
+acf(xt)
+pacf(xt)
+```
+Initial behavior suggests an MA model based on the prominent ACF spikes at lags 1 and 2, with gradually decaying PACF spikes.
+
+```{r}
+#iterate over all  possibilities 
+for (i in 1:3){
+  print(sarima(xdata=gdp,p=1,d=2,q=i,no.constant=TRUE))
+}
+```
+Of these, it appears that an ARIMA(1,2,2) model performs best, where I=2 because of the differenced
+dataset when looking at the AIC and the distribution of the residuals.
+
+# Example 5.3 [8 points]. 
+##Crude oil prices in dollars per barrel are in oil. Fit an ARIMA(p,d,q) model to the growth rate performing ##all necessary diagnostics. Comment.
+
+```{r}
+par(mfrow=c(2,1))
+plot(oil,main="oil prices ber barrel",col='red')
+acf(oil)
+```
+This series is non-stationary and this is evident in the slowly decaying acf.
+
+```{r}
+#transformations
+par(mfrow=c(2,1))
+plot(diff(oil),main='differenced oil price')
+plot(diff(diff(oil)),main='diff-2 oil price')
+```
+We begin with a diff-1 acf/pacf analysis:
+
+```{r}
+par(mfrow=c(2,1))
+acf(diff(oil))
+pacf(diff(oil))
+```
+Behavior suggests the possibility of an ARMA(1,1) or an ARMA(2,1) process.
+
+```{r}
+#parameter estimation
+#iterate over all  possibilities 
+for (i in 1:3){
+  print(sarima(xdata=diff(oil),p=i,d=0,q=1,no.constant=TRUE))
+}
+
+```
+Results suggest that an ar2 and ar3 component are not significant, so we retain the AR-1 portion
+and can move on to tuning for MA.
+
+```{r}
+for (i in 1:2){
+  print(sarima(xdata=diff(oil),p=1,d=0,q=i,no.constant=TRUE))
+}
+```
+Results also confirm that an MA-2 component is not significant, so we proceed with an ARMA(1,1) model for the difference in oil prices, or an ARIMA(1,1,1) for the oil prices originally used.
+
+#Example 5.11 [8 points] 
+##Fit a seasonal ARIMA model of your choice to the U.S. Live Birth Series, birth. Use the estimated model to forecast the next 12 months.
+
+```{r}
+par(mfrow=c(2,1))
+plot(birth)
+plot(diff(birth))
+dbirth = diff(birth)
+```
+Differencing helps us remove the trend for the data, which leaves us with a very strong seasonal component.
+
+```{r}
+par(mfrow=c(2,1))
+acf(dbirth)
+pacf(dbirth)
+```
+Three strong spikes in the ACF suggest an MA-3, however, the 12-lag difference between the prominent spikes in the ACF also suggests that this could be a seasonal MA(1) combined with an MA(1)/(2) process. However, one could make the argument that the PACF exhibits seasonality as well, so we may consider a SAR(1) component.
+
+```{r}
+for (i in 1:2){
+  for(j in 0:1){
+    this.arima = arima(dbirth,order=c(i,0,i),seasonal=c(j,0,1),include.mean = FALSE)
+    print(this.arima$coef)
+    print(this.arima$aic)
+    print(mean(this.arima$residuals))
+    print(Box.test(this.arima$residuals)$p.value)
+    #print(rmse(fitted(this.arima),dbirth))
+    print("*****END OF MODEL*****")
+  }
+}
+```
+based on the AIC, parsimony, and the RMSE, we would consider an ARMA(1,1) * SARMA(1,1) model.
+
+```{r}
+#forecast
+sarima.for(xdata=birth,n.ahead=12, p = 1, q=1, d= 0, P=1, Q = 1,D=0,S=12)
+```
+

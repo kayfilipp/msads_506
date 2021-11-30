@@ -1,0 +1,154 @@
+---
+title: "Module 4 - Spectral Density"
+author: "Filipp Krasovsky"
+date: "11/22/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 6.1 
+## Using n = 128, generate and plot the following series:
+## x1 = 2cos(2pi * .06t) + 3sin(2pi * 0.06t)
+## x2 = 4cos(2pi * .1t)  + 5sin(2pi * 0.1t)
+## x3 = 6cos(2pi*0.4t) + 7sin(2pi*0.4t)
+## x = x1+x2+x3
+
+### what is the difference between these series and those generated in the original example?
+
+```{r}
+#Plot the original
+
+require(astsa)
+
+plot_example_61<-function(t){
+  gamma = 2*pi*t
+  x1 = 2*cos(gamma * (6/100)) + 3*sin(gamma*(6/100))
+  x2 = 4*cos(gamma * (10/100))+ 5*sin(gamma*(10/100))
+  x3 = 6*cos(gamma * (40/100))+ 7*sin(gamma*(40/100))
+  x = x1+x2+x3
+  
+  par(mfrow=c(2,2))
+  tsplot(x1, ylim=c(-10,10), main=expression(omega=6/100~~~A^2==13))
+  tsplot(x2, ylim=c(-10,10), main=expression(omega=10/100~~~A^2==41))
+  tsplot(x3, ylim=c(-10,10), main=expression(omega=40/100~~~A^2==85))
+  tsplot(x, ylim=c(-16,16), main="sum") 
+}
+
+```
+
+First, we plot the original n=100 series:
+```{r}
+plot_example_61(1:100)
+```
+Next, we plot the modified n=128 series:
+
+```{r}
+plot_example_61(1:128)
+```
+These graphs differ by their fundamental frequencies, the frequency is defined as the number of cycles in n time points. For instance, Series X1, at n = 100, has a fundamental frequency of 6 cycles per 100 time points, while at n=128, series x1 has a frequency of 7 full cycles per 120 time points.
+
+## generate a periodigram of xt and comment.
+
+```{r}
+#reinit our time series
+t = 1:128
+gamma = 2*pi*t
+x1 = 2*cos(gamma * (6/100)) + 3*sin(gamma*(6/100))
+x2 = 4*cos(gamma * (10/100))+ 5*sin(gamma*(10/100))
+x3 = 6*cos(gamma * (40/100))+ 7*sin(gamma*(40/100))
+x = x1+x2+x3
+
+
+P = Mod(fft(x)/sqrt(128))^2
+sP = (4/128) * P #scale 
+Fr = (0:127)/128 #fundamental freqs
+tsplot(Fr,sP,type="o",xlab="Frequency",ylab='Scaled periodigram',col=4,ylim=c(0,90))
+abline(v=.5,lty=5)
+
+```
+Given that 0.5 is our folding frequency in this instance, we can disregard the interpretation of frequencies > 0.5. 0.06, 0.1, and 0.4 correspond to the frequencies of x1,x2, and x3 respectively - their amplitudes correspond appropriately to the coefficients sqrt(U1**2 + U2**2) as well.
+
+##The Data in star are the magnitude of a star taken at midnight for 600 days. Plot the data, perform a periodigram analysis on the data and find the prominent periodic components. Remove the mean from the data first.
+
+```{r}
+#begin by detrending and plotting the data.
+df = astsa::star;
+fit = lm(df ~ time(df),na.action = NULL)
+df_nm = resid(fit)
+par(mfrow=c(2,1))
+plot(df,main="Original Star Data")
+plot(df_nm,main="Star Data, mean removed")
+
+#get the periodigram
+n = length(df_nm)
+P = Mod(fft(df_nm)/sqrt(n))^2
+sP = (4/n) * P #scale 
+Fr = (0:(n-1))/n #fundamental freqs
+tsplot(Fr,sP,type="o",xlab="Frequency",ylab='Scaled periodigram',col=4,ylim=c(0,90),xlim=c(0,0.5))
+abline(v=.5,lty=5)
+
+#print out the significant frequencies:
+print(sP[sP>=50])
+```
+The frequencies at points 22 and 26 appear to be significant, meaning that the frequencies associated with frequencies of 0.3 and 0.4 contribute the most to the signal in the time series.
+
+## 7.1 Figure A.4 in the textbook shows a biyearly smoothed 12-month MA number of sunspots from 1749-1978 w/ N=459 points taken twice per year. this data is contained in sunspotz. Use example 7.4 to perform a periodigram analysis identifying the prominent periods and obtain the confidence intervals. interpret.
+
+```{r}
+plot(sunspotz)
+
+mvspec(sunspotz,col=rgb(.05,.6,.75),lwd=2,log = "yes")
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+abline(v=1/10,lty=2,col='red')
+mtext("1/10",side=1,line=0,at=.1,cex=.75)
+```
+An overview of the time series data suggests that around 5 cycles occur every 50 years, which suggests that we're looking for a frequency of 5/50, or 0.1. This hypothesis is substantiated by our periodigram, which attributes the most density to frequencies at or around 0.1, confirming the evaluation that the number of sunspots cycles up and down every 10 years.
+
+## 7.2 The levels of salt concentration known to have occured over rows, corresponding to the average temperature levels for the soil science are in salt and saltemp. Plot the series and identify the dominant frequencies. Include confidence intervals, interpret findings.
+
+```{r}
+par(mfrow=c(2,1))
+plot(salt)
+plot(saltemp)
+
+mvspec(salt,col=rgb(.05,.6,.75),lwd=2)
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+abline(v=.06,lty=2,col='red')
+mtext("3/50",side=1,line=0,at=.06,cex=.75)
+
+mvspec(saltemp,col=rgb(.05,.6,.75),lwd=2)
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+abline(v=.06,lty=2,col='red')
+mtext("3/50",side=1,line=0,at=.06,cex=.75)
+
+mvspec(salt,col=rgb(.05,.6,.75),lwd=2,log = "yes")
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+
+mvspec(saltemp,col=rgb(.05,.6,.75),lwd=2,log = "yes")
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+```
+The dominant frequency seems to be 6/100, or 3/50 - meaning 3 cycles occur in salt levels and temperature roughly every 30 years (with noise included). Interestingly, Salt also has a significant peak slightly past 0.1, possibly at around 11/100.
+
+This falls in line with our intuitive analysis of the original ts data because there is, indeed, a dip in salt levels roughly every +10 years, but the drop does not return salt levels exactly to where they were 10 years ago, probably due to shocks as well as a relationship to the saltemp dataset.
+
+## 7.5 repeat problem 7.2 using a nonparametric spectral estimation procedure. Comment on the choice of spectral estimate with regards to smoothing and tapering.
+```{r}
+par(mfrow=c(2,1))  
+mvspec(saltemp, spans=5,taper=.5)  
+abline(v=1/16, lty=2)  
+mvspec(salt, spans=5, log="no", taper=.5)  
+abline(v=1/16, lty=2)  
+
+par(mfrow=c(2,1))
+mvspec(saltemp,spans=5,taper=.5,col=rgb(.05,.6,.75),lwd=2,log = "yes")
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+mvspec(salt,spans=5,taper=.5,col=rgb(.05,.6,.75),lwd=2,log = "yes")
+rect(1/7,-1e5,1/3,1e5,density=NA,col=gray(.5,.2))
+```
+Tapering the series introduces a smoothing component to the periodigram by applying weights that slowly go to zero at the endpoints. The span component introduces a moving average satisfying the daniell Kernel formula m = 2L+1, so in this case, 2 points to the left and right of each frequency point are used for smoothing. The non-log smoothed periodigrams retain the same message - in particular, that the strongest signal comes from the frequency of 0.06/0.07, which suggests that the most prominent cyclical behavior occurs three times every 50 years.
+
+
+
